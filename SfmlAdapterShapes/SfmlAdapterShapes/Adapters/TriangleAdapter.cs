@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes.Adapters;
 
@@ -7,12 +8,14 @@ public class TriangleAdapter : ShapeAdapterBase
 {
     private readonly ConvexShape shape;
     private readonly Vector2f p1, p2, p3;
+    private readonly ICanvas canvas;
 
-    public TriangleAdapter( Vector2f p1, Vector2f p2, Vector2f p3 )
+    public TriangleAdapter( Vector2f p1, Vector2f p2, Vector2f p3, ICanvas canvas )
     {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
+        this.canvas = canvas;
 
         float minX = Math.Min( p1.X, Math.Min( p2.X, p3.X ) );
         float minY = Math.Min( p1.Y, Math.Min( p2.Y, p3.Y ) );
@@ -47,9 +50,9 @@ public class TriangleAdapter : ShapeAdapterBase
         return ( float )Math.Sqrt( Math.Pow( a.X - b.X, 2 ) + Math.Pow( a.Y - b.Y, 2 ) );
     }
 
-    public override void Draw( RenderWindow window )
+    public override void Draw()
     {
-        window.Draw( shape );
+        canvas.DrawTriangle( shape );
     }
 
     public override string GetDescription()

@@ -1,12 +1,13 @@
 ﻿using SFML.System;
 using System.Globalization;
 using SfmlAdapterShapes.Adapters;
+using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes.Utils;
 
 public static class Parser
 {
-    public static List<ShapeAdapterBase> ParseShapesFromFile( string path )
+    public static List<ShapeAdapterBase> ParseShapesFromFile( string path, ICanvas canvas )
     {
         var shapes = new List<ShapeAdapterBase>();
         var lines = File.ReadAllLines( path );
@@ -27,18 +28,18 @@ public static class Parser
                 var p2 = ParsePoint( data, "P2=" );
                 var p3 = ParsePoint( data, "P3=" );
 
-                var triangle = new TriangleAdapter( p1, p2, p3 );
+                var triangle = new TriangleAdapter( p1, p2, p3, canvas );
                 shapes.Add( triangle );
             }
             else if ( line.StartsWith( "RECTANGLE", StringComparison.OrdinalIgnoreCase ) )
             {
-                // RECTANGLE: P1=200,200; P2=300,300;
+                // RECTANGLE: P1=200,200; P2=300,300
                 var data = line.Substring( line.IndexOf( ':' ) + 1 ).Trim();
 
                 var p1 = ParsePoint( data, "P1=" );
                 var p2 = ParsePoint( data, "P2=" );
 
-                var rect = new RectangleAdapter( p1, p2 );
+                var rect = new RectangleAdapter( p1, p2, canvas );
                 shapes.Add( rect );
             }
             else if ( line.StartsWith( "CIRCLE", StringComparison.OrdinalIgnoreCase ) )
@@ -49,7 +50,7 @@ public static class Parser
                 var center = ParsePoint( data, "C=" );
                 float radius = ParseRadius( data, "R=" );
 
-                var circle = new CircleAdapter( center, radius );
+                var circle = new CircleAdapter( center, radius, canvas );
                 shapes.Add( circle );
             }
         }

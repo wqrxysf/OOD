@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes.Adapters;
 
@@ -8,11 +9,13 @@ public class CircleAdapter : ShapeAdapterBase
     private readonly CircleShape shape;
     private readonly Vector2f center;
     private readonly float radius;
+    private readonly ICanvas canvas;
 
-    public CircleAdapter( Vector2f center, float radius )
+    public CircleAdapter( Vector2f center, float radius, ICanvas canvas )
     {
         this.center = center;
         this.radius = radius;
+        this.canvas = canvas;
 
         shape = new CircleShape( radius )
         {
@@ -33,9 +36,9 @@ public class CircleAdapter : ShapeAdapterBase
         return ( float )( 2 * Math.PI * radius );
     }
 
-    public override void Draw( RenderWindow window )
+    public override void Draw()
     {
-        window.Draw( shape );
+        canvas.DrawCircle( shape );
     }
 
     public override string GetDescription()

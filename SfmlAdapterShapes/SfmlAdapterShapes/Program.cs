@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
 using SfmlAdapterShapes.Utils;
+using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes;
 
@@ -21,7 +22,12 @@ class Program
             throw new FileNotFoundException( fileNotFoundMessage );
         }
 
-        var shapes = Parser.ParseShapesFromFile( inputPath );
+        VideoMode mode = new VideoMode( windowWidth, windowHeight );
+        RenderWindow window = new RenderWindow( mode, windowTitle );
+        window.Closed += ( sender, e ) => ( ( RenderWindow )sender ).Close();
+        ICanvas canvas = new Canvas( window );
+
+        var shapes = Parser.ParseShapesFromFile( inputPath, canvas );
 
         using ( var writer = new StreamWriter( outputPath, false ) )
         {
@@ -31,10 +37,6 @@ class Program
             }
         }
 
-        VideoMode mode = new VideoMode( windowWidth, windowHeight );
-        RenderWindow window = new RenderWindow( mode, windowTitle );
-        window.Closed += ( sender, e ) => ( ( RenderWindow )sender ).Close();
-
         while ( window.IsOpen )
         {
             window.DispatchEvents();
@@ -43,7 +45,7 @@ class Program
 
             foreach ( var s in shapes )
             {
-                s.Draw( window );
+                s.Draw();
             }
 
             window.Display();

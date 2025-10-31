@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes.Adapters;
 
@@ -7,11 +8,13 @@ public class RectangleAdapter : ShapeAdapterBase
 {
     private readonly RectangleShape shape;
     private readonly Vector2f p1, p2;
+    private readonly ICanvas canvas;
 
-    public RectangleAdapter( Vector2f p1, Vector2f p2 )
+    public RectangleAdapter( Vector2f p1, Vector2f p2, ICanvas canvas )
     {
         this.p1 = p1;
         this.p2 = p2;
+        this.canvas = canvas;
         shape = new RectangleShape();
 
         var topLeft = new Vector2f( Math.Min( p1.X, p2.X ), Math.Min( p1.Y, p2.Y ) );
@@ -30,9 +33,9 @@ public class RectangleAdapter : ShapeAdapterBase
 
     public override float GetPerimeter() => 2f * ( Math.Abs( p1.X - p2.X ) + Math.Abs( p1.Y - p2.Y ) );
 
-    public override void Draw( RenderWindow window )
+    public override void Draw()
     {
-        window.Draw( shape );
+        canvas.DrawRectangle( shape );
     }
 
     public override string GetDescription()

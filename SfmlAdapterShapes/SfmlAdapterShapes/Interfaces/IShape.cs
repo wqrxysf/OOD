@@ -7,5 +7,5 @@ public interface IShape
     float GetPerimeter();
     float GetArea();
     string GetDescription();
-    void Draw( RenderWindow window );
+    void Draw();
 }
