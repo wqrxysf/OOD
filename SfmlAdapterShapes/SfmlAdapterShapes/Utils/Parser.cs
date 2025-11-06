@@ -2,14 +2,15 @@
 using System.Globalization;
 using SfmlAdapterShapes.Adapters;
 using SfmlAdapterShapes.Utils.Canvas;
+using SfmlAdapterShapes.Interfaces;
 
 namespace SfmlAdapterShapes.Utils;
 
 public static class Parser
 {
-    public static List<ShapeAdapterBase> ParseShapesFromFile( string path, ICanvas canvas )
+    public static List<IShape> ParseShapesFromFile( string path, ICanvas canvas )
     {
-        var shapes = new List<ShapeAdapterBase>();
+        var shapes = new List<IShape>();
         var lines = File.ReadAllLines( path );
 
         foreach ( var raw in lines )
