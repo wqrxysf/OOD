@@ -51,5 +51,8 @@ public class RectangleAdapter : ShapeAdapterBase
     {
         _shape.Position += delta;
     }
-    public override bool Contains( Vector2f point ) => GetBounds().Contains( point.X, point.Y );
+    public override bool Contains( Vector2f point )
+    {
+        return GetBounds().Contains( point.X, point.Y );
+    }
 }

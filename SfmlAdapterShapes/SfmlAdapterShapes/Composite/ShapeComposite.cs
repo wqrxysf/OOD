@@ -8,8 +8,14 @@ public class ShapeComposite : IShape
 {
     private readonly List<IShape> _childrens = new List<IShape>();
     public bool IsSelected { get; set; } = false;
-    public void Add( IShape s ) => _childrens.Add( s );
-    public void Remove( IShape s ) => _childrens.Remove( s );
+    public void Add( IShape s )
+    {
+        _childrens.Add( s );
+    }
+    public void Remove( IShape s )
+    {
+        _childrens.Remove( s );
+    }
     public IReadOnlyList<IShape> Children => _childrens.AsReadOnly();
 
     public float GetPerimeter()
@@ -66,10 +72,10 @@ public class ShapeComposite : IShape
         for ( int i = 1; i < _childrens.Count; i++ )
         {
             var cb = _childrens[ i ].GetBounds();
-            left = System.Math.Min( left, cb.Left );
-            top = System.Math.Min( top, cb.Top );
-            right = System.Math.Max( right, cb.Left + cb.Width );
-            bottom = System.Math.Max( bottom, cb.Top + cb.Height );
+            left = Math.Min( left, cb.Left );
+            top = Math.Min( top, cb.Top );
+            right = Math.Max( right, cb.Left + cb.Width );
+            bottom = Math.Max( bottom, cb.Top + cb.Height );
         }
         return new FloatRect( left, top, right - left, bottom - top );
     }
