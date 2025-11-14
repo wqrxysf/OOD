@@ -12,10 +12,10 @@ public class TriangleAdapter : ShapeAdapterBase
 
     public TriangleAdapter( Vector2f p1, Vector2f p2, Vector2f p3, ICanvas canvas )
     {
-        this._p1 = p1;
-        this._p2 = p2;
-        this._p3 = p3;
-        this._canvas = canvas;
+        _p1 = p1;
+        _p2 = p2;
+        _p3 = p3;
+        _canvas = canvas;
 
         float minX = Math.Min( p1.X, Math.Min( p2.X, p3.X ) );
         float minY = Math.Min( p1.Y, Math.Min( p2.Y, p3.Y ) );

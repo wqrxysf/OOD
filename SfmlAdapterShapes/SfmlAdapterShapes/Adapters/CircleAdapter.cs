@@ -13,9 +13,9 @@ public class CircleAdapter : ShapeAdapterBase
 
     public CircleAdapter( Vector2f center, float radius, ICanvas canvas )
     {
-        this._center = center;
-        this._radius = radius;
-        this._canvas = canvas;
+        _center = center;
+        _radius = radius;
+        _canvas = canvas;
 
         _shape = new CircleShape( radius )
         {

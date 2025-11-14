@@ -12,9 +12,9 @@ public class RectangleAdapter : ShapeAdapterBase
 
     public RectangleAdapter( Vector2f p1, Vector2f p2, ICanvas canvas )
     {
-        this._p1 = p1;
-        this._p2 = p2;
-        this._canvas = canvas;
+        _p1 = p1;
+        _p2 = p2;
+        _canvas = canvas;
         _shape = new RectangleShape();
 
         var topLeft = new Vector2f( Math.Min( p1.X, p2.X ), Math.Min( p1.Y, p2.Y ) );
