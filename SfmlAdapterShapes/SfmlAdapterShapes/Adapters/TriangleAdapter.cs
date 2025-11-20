@@ -93,4 +93,19 @@ public class TriangleAdapter : ShapeAdapterBase
         return MathF.Abs( ( area1 + area2 + area3 ) - areaOrig ) < 0.5f;
     }
 
+    public override void SetFillColor( Color c )
+    {
+        _shape.FillColor = c;
+    }
+
+    public override void SetOutlineColor( Color c )
+    {
+        _shape.OutlineColor = c;
+    }
+
+    public override void SetOutlineThickness( float t )
+    {
+        _shape.OutlineThickness = t;
+    }
+
 }

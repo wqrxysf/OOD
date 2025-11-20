@@ -63,4 +63,20 @@ public class CircleAdapter : ShapeAdapterBase
         float dy = point.Y - c.Y;
         return dx * dx + dy * dy <= _shape.Radius * _shape.Radius;
     }
+
+    public override void SetFillColor( Color c )
+    {
+        _shape.FillColor = c;
+    }
+
+    public override void SetOutlineColor( Color c )
+    {
+        _shape.OutlineColor = c;
+    }
+
+    public override void SetOutlineThickness( float t )
+    {
+        _shape.OutlineThickness = t;
+    }
+
 }

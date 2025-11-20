@@ -1,6 +1,8 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using SfmlAdapterShapes.Adapters;
+using SfmlAdapterShapes.App;
 using SfmlAdapterShapes.Composite;
 using SfmlAdapterShapes.Interfaces;
 
@@ -35,6 +37,10 @@ public class UserHandler
                 var mouse = Mouse.GetPosition( _window );
                 var mf = new Vector2f( mouse.X, mouse.Y );
 
+                if ( Application.Instance.ToolboxPanel != null && Application.Instance.ToolboxPanel.ContainsPoint( mf ) )
+                {
+                    return;
+                }
                 IShape hit = null;
                 for ( int i = _shapes.Count - 1; i >= 0; i-- )
                 {
@@ -43,6 +49,14 @@ public class UserHandler
                         hit = _shapes[ i ];
                         break;
                     }
+                }
+
+                // fil mode
+                if ( Application.Instance.Mode == AppMode.Fill && hit != null )
+                {
+                    var fillColor = Application.Instance.ToolboxPanel?.GetCurrentFillColor() ?? new SFML.Graphics.Color( 255, 0, 0 );
+                    ( hit as ShapeAdapterBase )?.SetFillColor( fillColor );
+                    return;
                 }
 
                 bool shift = Keyboard.IsKeyPressed( Keyboard.Key.LShift ) || Keyboard.IsKeyPressed( Keyboard.Key.RShift );

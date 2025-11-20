@@ -55,4 +55,20 @@ public class RectangleAdapter : ShapeAdapterBase
     {
         return GetBounds().Contains( point.X, point.Y );
     }
+
+    public override void SetFillColor( Color c )
+    {
+        _shape.FillColor = c;
+    }
+
+    public override void SetOutlineColor( Color c )
+    {
+        _shape.OutlineColor = c;
+    }
+
+    public override void SetOutlineThickness( float t )
+    {
+        _shape.OutlineThickness = t;
+    }
+
 }

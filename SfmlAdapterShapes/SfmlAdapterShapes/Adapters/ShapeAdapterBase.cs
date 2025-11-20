@@ -15,4 +15,9 @@ public abstract class ShapeAdapterBase : IShape
     public abstract FloatRect GetBounds();
     public abstract void Move( Vector2f delta );
     public bool IsSelected { get; set; } = false;
+
+    public virtual void SetFillColor( Color c ) { }
+    public virtual void SetOutlineColor( Color c ) { }
+    public virtual void SetOutlineThickness( float t ) { }
+
 }

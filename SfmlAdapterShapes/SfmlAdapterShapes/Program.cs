@@ -1,66 +1,37 @@
 ﻿using SFML.Graphics;
-using SFML.Window;
+using SfmlAdapterShapes.App;
 using SfmlAdapterShapes.Interfaces;
 using SfmlAdapterShapes.Utils;
-using SfmlAdapterShapes.Utils.Canvas;
 
 namespace SfmlAdapterShapes;
 
 class Program
 {
+    const string InputFileName = "input.txt";
+    const string NotFoundErrorMessage = $"Не найден {InputFileName}.";
     static void Main( string[] args )
     {
-        const string inputPath = "input.txt";
-        const string outputPath = "output.txt";
-        const string fileNotFoundMessage = $"Не найден {inputPath}.";
+        if ( !File.Exists( InputFileName ) )
+            throw new FileNotFoundException( NotFoundErrorMessage );
 
-        const int windowWidth = 800;
-        const int windowHeight = 600;
-        const string windowTitle = "SFML Adapter Shapes";
+        Application.Instance.Init();
+        Application app = Application.Instance;
 
-        if ( !File.Exists( inputPath ) )
+        while ( app.Window.IsOpen )
         {
-            throw new FileNotFoundException( fileNotFoundMessage );
-        }
+            app.Window.DispatchEvents();
+            app.Window.Clear( Color.White );
 
-        VideoMode mode = new VideoMode( windowWidth, windowHeight );
-        RenderWindow window = new RenderWindow( mode, windowTitle );
-        window.Closed += ( sender, e ) => ( ( RenderWindow )sender ).Close();
-        ICanvas canvas = new Canvas( window );
-
-        var shapes = Parser.ParseShapesFromFile( inputPath, canvas );
-
-        using ( var writer = new StreamWriter( outputPath, false ) )
-        {
-            foreach ( var s in shapes )
-            {
-                writer.WriteLine( s.GetDescription() );
-            }
-        }
-
-        List<IShape> selected = new List<IShape>();
-
-        UserHandler userHandler = new UserHandler( window, shapes, selected );
-        userHandler.HandleUserOperation();
-
-        while ( window.IsOpen )
-        {
-            window.DispatchEvents();
-
-            window.Clear( Color.White );
-
-            foreach ( var shape in shapes )
-            {
+            foreach ( IShape shape in app.Shapes )
                 shape.Draw();
-            }
 
-            foreach ( var element in selected )
-            {
-                var bounds = element.GetBounds();
-                SelectionRenderer.DrawSelection( window, bounds );
-            }
+            foreach ( IShape shape in app.Selected )
+                SelectionRenderer.DrawSelection( app.Window, shape.GetBounds() );
 
-            window.Display();
+            app.ToolboxPanel.Draw();
+
+            app.Window.Display();
         }
     }
+
 }
