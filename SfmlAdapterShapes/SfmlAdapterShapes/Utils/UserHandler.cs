@@ -1,10 +1,9 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using SfmlAdapterShapes.Adapters;
 using SfmlAdapterShapes.App;
-using SfmlAdapterShapes.Composite;
 using SfmlAdapterShapes.Interfaces;
+using SfmlAdapterShapes.Commands;
 
 namespace SfmlAdapterShapes.Utils;
 public class UserHandler
@@ -19,6 +18,45 @@ public class UserHandler
         _window = window;
         _shapes = shapes;
         _selected = selected;
+    }
+
+    public void HandleDragModeMouseClick(Vector2f mousePosition, bool isShiftPressed)
+    {
+        IShape hit = null;
+        for (int i = _shapes.Count - 1; i >= 0; i--)
+        {
+            if (_shapes[i].Contains(mousePosition))
+            {
+                hit = _shapes[i];
+                break;
+            }
+        }
+
+        if (hit != null)
+        {
+            ICommand command;
+            if (isShiftPressed)
+            {
+                command = new RemoveShapeFromSelectedGroupCommand(hit, _selected);
+            }
+            else
+            {
+                command = new AddShapeIntoSelectedGroupCommand(hit, _selected);
+            }
+            command.Execute();
+
+            var mouse = new Vector2i((int)mousePosition.X, (int)mousePosition.Y);
+            _isDragging = true;
+            _lastMousePos = mouse;
+        }
+        else
+        {
+            if (!isShiftPressed)
+            {
+                var command = new ClearSelectionCommand(_selected);
+                command.Execute();
+            }
+        }
     }
     public void HandleUserOperation()
     {
@@ -41,50 +79,9 @@ public class UserHandler
                 {
                     return;
                 }
-                IShape hit = null;
-                for ( int i = _shapes.Count - 1; i >= 0; i-- )
-                {
-                    if ( _shapes[ i ].Contains( mf ) )
-                    {
-                        hit = _shapes[ i ];
-                        break;
-                    }
-                }
-
-                // fil mode
-                if ( Application.Instance.Mode == AppMode.Fill && hit != null )
-                {
-                    var fillColor = Application.Instance.ToolboxPanel?.GetCurrentFillColor() ?? new SFML.Graphics.Color( 255, 0, 0 );
-                    ( hit as ShapeAdapterBase )?.SetFillColor( fillColor );
-                    return;
-                }
 
                 bool shift = Keyboard.IsKeyPressed( Keyboard.Key.LShift ) || Keyboard.IsKeyPressed( Keyboard.Key.RShift );
-                if ( hit != null )
-                {
-                    if ( shift )
-                    {
-                        RemoveShapeFromSelectedGroupOperation( hit );
-                    }
-                    else
-                    {
-                        AddShapeIntoSelectedGroupOperation( hit );
-                    }
-
-                    _isDragging = true;
-                    _lastMousePos = mouse;
-                }
-                else
-                {
-                    if ( !shift )
-                    {
-                        foreach ( var s in _selected )
-                        {
-                            s.IsSelected = false;
-                        }
-                        _selected.Clear();
-                    }
-                }
+                Application.Instance.CurrentState.HandleMouseButtonPressed(mf, shift);
             }
         };
     }
@@ -124,78 +121,14 @@ public class UserHandler
             bool ctrl = Keyboard.IsKeyPressed( Keyboard.Key.LControl ) || Keyboard.IsKeyPressed( Keyboard.Key.RControl );
             if ( ctrl && e.Code == Keyboard.Key.G ) // сtrl + g
             {
-                GroupOperation();
+                var command = new GroupOperationCommand(_shapes, _selected);
+                command.Execute();
             }
             if ( ctrl && e.Code == Keyboard.Key.U )
             {
-                UngroupOperation();
+                var command = new UngroupOperationCommand(_shapes, _selected);
+                command.Execute();
             }
         };
-    }
-
-    private static void UngroupOperation()
-    {
-        if ( _selected.Count == 1 && _selected[ 0 ] is ShapeComposite composite )
-        {
-            _shapes.Remove( composite );
-            foreach ( var child in composite.Children )
-            {
-                _shapes.Add( child );
-            }
-            composite.IsSelected = false;
-            _selected.Clear();
-        }
-    }
-
-    private static void GroupOperation()
-    {
-        if ( _selected.Count > 1 )
-        {
-            var group = new ShapeComposite();
-
-            foreach ( var s in _selected )
-            {
-                group.Add( s );
-            }
-            foreach ( var s in _selected )
-            {
-                _shapes.Remove( s );
-            }
-            _shapes.Add( group );
-
-            foreach ( var s in _selected )
-            {
-                s.IsSelected = false;
-            }
-            _selected.Clear();
-            group.IsSelected = true;
-            _selected.Add( group );
-        }
-    }
-
-    private static void RemoveShapeFromSelectedGroupOperation( IShape hit )
-    {
-        if ( _selected.Contains( hit ) )
-        {
-            _selected.Remove( hit );
-            hit.IsSelected = false;
-        }
-        else
-        {
-            _selected.Add( hit );
-            hit.IsSelected = true;
-        }
-    }
-
-    private static void AddShapeIntoSelectedGroupOperation( IShape hit )
-    {
-        foreach ( var s in _selected )
-        {
-            s.IsSelected = false;
-        }
-        _selected.Clear();
-
-        _selected.Add( hit );
-        hit.IsSelected = true;
     }
 }

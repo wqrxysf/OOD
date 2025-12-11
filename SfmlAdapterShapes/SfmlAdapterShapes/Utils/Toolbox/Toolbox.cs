@@ -2,6 +2,8 @@
 using SFML.System;
 using SfmlAdapterShapes.Adapters;
 using SfmlAdapterShapes.App;
+using SfmlAdapterShapes.Commands;
+using SfmlAdapterShapes.Interfaces;
 
 namespace SfmlAdapterShapes.Utils.Toolbox;
 public class Toolbox
@@ -45,43 +47,32 @@ public class Toolbox
         _font = new Font( FontName );
 
         int y = PanelYCoordinate;
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), CircleButtonTitle, _font, () =>
-            _app.AddShape( new CircleAdapter( new Vector2f( 150, 150 ), 40, _app.Canvas ) ) ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), CircleButtonTitle, _font, 
+            new AddShapeCommand( () => new CircleAdapter( new Vector2f( 150, 150 ), 40, _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), RectangleButtonTitle, _font, () =>
-            _app.AddShape( new RectangleAdapter( new Vector2f( 120, 120 ), new Vector2f( 220, 180 ), _app.Canvas ) ) ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), RectangleButtonTitle, _font, 
+            new AddShapeCommand( () => new RectangleAdapter( new Vector2f( 120, 120 ), new Vector2f( 220, 180 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), TriangleButtonTitle, _font, () =>
-            _app.AddShape( new TriangleAdapter( new Vector2f( 100, 100 ), new Vector2f( 160, 200 ), new Vector2f( 220, 120 ), _app.Canvas ) ) ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), TriangleButtonTitle, _font, 
+            new AddShapeCommand( () => new TriangleAdapter( new Vector2f( 100, 100 ), new Vector2f( 160, 200 ), new Vector2f( 220, 120 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap + PanelInterval;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), FillButtonTitle, _font, () =>
-        {
-            _fillIndex = ( _fillIndex + 1 ) % FillColors.Length;
-            _app.ChangeFillColor( FillColors[ _fillIndex ] );
-        } ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), FillButtonTitle, _font, 
+            new ChangeFillColorToolboxCommand( _app, FillColors, () => _fillIndex, (idx) => _fillIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), OutlineButtonTitle, _font, () =>
-        {
-            _outlineIndex = ( _outlineIndex + 1 ) % OutlineColors.Length;
-            _app.ChangeOutlineColor( OutlineColors[ _outlineIndex ] );
-        } ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), OutlineButtonTitle, _font, 
+            new ChangeOutlineColorToolboxCommand( _app, OutlineColors, () => _outlineIndex, (idx) => _outlineIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), ThickButtonTitle, _font, () =>
-        {
-            _thickIndex = ( _thickIndex + 1 ) % Thicknesses.Length;
-            _app.ChangeOutlineThickness( Thicknesses[ _thickIndex ] );
-        } ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), ThickButtonTitle, _font, 
+            new ChangeOutlineThicknessToolboxCommand( _app, Thicknesses, () => _thickIndex, (idx) => _thickIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
-        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, PanelYCoordinate, PanelWidth, PanelHight ), ModeButtonTitle, _font, () =>
-        {
-            _app.ToggleMode();
-        } ) );
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), ModeButtonTitle, _font, 
+            new ToggleModeCommand( _app ) ) );
 
         window.MouseButtonPressed += ( s, e ) =>
         {
@@ -111,7 +102,7 @@ public class Toolbox
             b.Draw( _window );
 
         // индикатор режима
-        string modeText = $"Mode: {_app.Mode}";
+        string modeText = $"Mode: {_app.CurrentState.GetName()}";
         Text mt = new Text( modeText, _font, TextThickness ) { Position = new Vector2f( _panelRect.Left + TextLeftGap, _panelRect.Top + _panelRect.Height - TextHightGap ), FillColor = Color.Black };
         _window.Draw( mt );
     }
