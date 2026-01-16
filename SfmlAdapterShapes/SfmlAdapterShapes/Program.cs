@@ -12,8 +12,6 @@ class Program
         if ( !File.Exists( InputFileName ) )
             throw new FileNotFoundException( NotFoundErrorMessage );
 
-        // Использование Application как Singleton и Facade
-        // Facade скрывает сложность инициализации и работы с подсистемой
         Application.Instance.Init();
         Application.Instance.Run();
     }

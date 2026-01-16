@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SfmlAdapterShapes.Interfaces;
+using SfmlAdapterShapes.Visitor;
 
 namespace SfmlAdapterShapes.Composite;
 
@@ -86,5 +87,10 @@ public class ShapeComposite : IShape
         {
             c.Move( delta );
         } 
+    }
+
+    public void Accept(IShapeVisitor visitor)
+    {
+        visitor.VisitComposite(this);
     }
 }

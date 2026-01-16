@@ -1,6 +1,5 @@
-using SfmlAdapterShapes.Adapters;
 using SfmlAdapterShapes.Interfaces;
-using SfmlAdapterShapes.Composite;
+using SfmlAdapterShapes.Visitor;
 
 namespace SfmlAdapterShapes.Commands;
 
@@ -8,7 +7,8 @@ public class ChangeOutlineThicknessCommand : ICommand
 {
     private readonly List<IShape> _selected;
     private readonly float _newThickness;
-    private readonly Dictionary<IShape, float> _oldThicknesses = new();
+    private ChangeOutlineThicknessVisitor? _visitor;
+    private UndoOutlineThicknessVisitor? _undoVisitor;
 
     public ChangeOutlineThicknessCommand(List<IShape> selected, float newThickness)
     {
@@ -18,60 +18,22 @@ public class ChangeOutlineThicknessCommand : ICommand
 
     public void Execute()
     {
-        _oldThicknesses.Clear();
-        var allShapes = GetAllShapesFromSelection(_selected);
-        foreach (IShape shape in allShapes)
+        _visitor = new ChangeOutlineThicknessVisitor(_newThickness);
+        foreach (IShape shape in _selected)
         {
-            if (shape is ShapeAdapterBase sa)
-            {
-                _oldThicknesses[shape] = _newThickness;
-                sa.SetOutlineThickness(_newThickness);
-            }
+            shape.Accept(_visitor);
         }
     }
 
     public void Undo()
     {
-        foreach (var kvp in _oldThicknesses)
+        if (_visitor != null)
         {
-            if (kvp.Key is ShapeAdapterBase sa)
+            _undoVisitor = new UndoOutlineThicknessVisitor(_visitor.GetOldThicknesses());
+            foreach (IShape shape in _selected)
             {
-                sa.SetOutlineThickness(kvp.Value);
+                shape.Accept(_undoVisitor);
             }
         }
-    }
-
-    private List<IShape> GetAllShapesFromSelection(List<IShape> selection)
-    {
-        var result = new List<IShape>();
-        foreach (var shape in selection)
-        {
-            if (shape is ShapeComposite composite)
-            {
-                result.AddRange(GetAllShapesFromComposite(composite));
-            }
-            else
-            {
-                result.Add(shape);
-            }
-        }
-        return result;
-    }
-
-    private List<IShape> GetAllShapesFromComposite(ShapeComposite composite)
-    {
-        var result = new List<IShape>();
-        foreach (var child in composite.Children)
-        {
-            if (child is ShapeComposite nestedComposite)
-            {
-                result.AddRange(GetAllShapesFromComposite(nestedComposite));
-            }
-            else
-            {
-                result.Add(child);
-            }
-        }
-        return result;
     }
 }

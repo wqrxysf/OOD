@@ -108,4 +108,13 @@ public class TriangleAdapter : ShapeAdapterBase
         _shape.OutlineThickness = t;
     }
 
+    public override Color GetFillColor() => _shape.FillColor;
+    public override Color GetOutlineColor() => _shape.OutlineColor;
+    public override float GetOutlineThickness() => _shape.OutlineThickness;
+
+    public override void Accept(Visitor.IShapeVisitor visitor)
+    {
+        visitor.VisitTriangle(this);
+    }
+
 }

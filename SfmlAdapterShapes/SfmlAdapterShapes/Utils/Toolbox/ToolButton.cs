@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SfmlAdapterShapes.Commands;
+using SfmlAdapterShapes.App;
 
 namespace SfmlAdapterShapes.Utils.Toolbox;
 public class ToolButton
@@ -44,7 +45,7 @@ public class ToolButton
     {
         if ( _rect.Contains( pos.X, pos.Y ) )
         {
-            _command.Execute();
+            Application.Instance.CommandManager.ExecuteCommand(_command);
             return true;
         }
         return false;

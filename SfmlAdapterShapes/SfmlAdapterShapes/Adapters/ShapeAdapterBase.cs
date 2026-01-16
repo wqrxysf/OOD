@@ -1,4 +1,5 @@
 ﻿using SfmlAdapterShapes.Interfaces;
+using SfmlAdapterShapes.Visitor;
 using SFML.Graphics;
 using SFML.System;
 
@@ -20,4 +21,9 @@ public abstract class ShapeAdapterBase : IShape
     public virtual void SetOutlineColor( Color c ) { }
     public virtual void SetOutlineThickness( float t ) { }
 
+    public virtual Color GetFillColor() => Color.White;
+    public virtual Color GetOutlineColor() => Color.Black;
+    public virtual float GetOutlineThickness() => 0f;
+
+    public abstract void Accept(IShapeVisitor visitor);
 }

@@ -13,6 +13,8 @@ public class UserHandler
     static List<IShape> _selected;
     private static bool _isDragging = false;
     Vector2i _lastMousePos = new Vector2i();
+    Vector2i _dragStartPos = new Vector2i();
+    private static Vector2f _totalDelta = new Vector2f(0, 0);
     public UserHandler( RenderWindow window, List<IShape> shapes, List<IShape> selected )
     {
         _window = window;
@@ -43,18 +45,20 @@ public class UserHandler
             {
                 command = new AddShapeIntoSelectedGroupCommand(hit, _selected);
             }
-            command.Execute();
+            Application.Instance.CommandManager.ExecuteCommand(command);
 
             var mouse = new Vector2i((int)mousePosition.X, (int)mousePosition.Y);
             _isDragging = true;
             _lastMousePos = mouse;
+            _dragStartPos = mouse;
+            _totalDelta = new Vector2f(0, 0);
         }
         else
         {
             if (!isShiftPressed)
             {
                 var command = new ClearSelectionCommand(_selected);
-                command.Execute();
+                Application.Instance.CommandManager.ExecuteCommand(command);
             }
         }
     }
@@ -92,7 +96,20 @@ public class UserHandler
         {
             if ( e.Button == Mouse.Button.Left )
             {
+                if (_isDragging && _selected.Count > 0 && (_totalDelta.X != 0 || _totalDelta.Y != 0))
+                {
+                    // Откатываем перемещение, которое было сделано напрямую
+                    var reverseDelta = new Vector2f(-_totalDelta.X, -_totalDelta.Y);
+                    foreach (var s in _selected)
+                    {
+                        s.Move(reverseDelta);
+                    }
+                    // Создаем команду перемещения с общим смещением
+                    var command = new MoveShapesCommand(_selected, _totalDelta);
+                    Application.Instance.CommandManager.ExecuteCommand(command);
+                }
                 _isDragging = false;
+                _totalDelta = new Vector2f(0, 0);
             }
         };
     }
@@ -105,6 +122,8 @@ public class UserHandler
             {
                 var cur = new Vector2i( e.X, e.Y );
                 var delta = new Vector2f( cur.X - _lastMousePos.X, cur.Y - _lastMousePos.Y );
+                _totalDelta.X += delta.X;
+                _totalDelta.Y += delta.Y;
                 foreach ( var s in _selected )
                 {
                     s.Move( delta );
@@ -122,12 +141,16 @@ public class UserHandler
             if ( ctrl && e.Code == Keyboard.Key.G ) // сtrl + g
             {
                 var command = new GroupOperationCommand(_shapes, _selected);
-                command.Execute();
+                Application.Instance.CommandManager.ExecuteCommand(command);
             }
             if ( ctrl && e.Code == Keyboard.Key.U )
             {
                 var command = new UngroupOperationCommand(_shapes, _selected);
-                command.Execute();
+                Application.Instance.CommandManager.ExecuteCommand(command);
+            }
+            if ( ctrl && e.Code == Keyboard.Key.Z ) // ctrl + z для Undo
+            {
+                Application.Instance.CommandManager.Undo();
             }
         };
     }

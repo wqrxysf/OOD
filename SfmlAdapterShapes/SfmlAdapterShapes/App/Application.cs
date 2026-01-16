@@ -5,6 +5,8 @@ using SfmlAdapterShapes.States;
 using SFML.Graphics;
 using SFML.Window;
 using SfmlAdapterShapes.Utils.Toolbox;
+using SfmlAdapterShapes.Commands;
+using SfmlAdapterShapes.Memento;
 
 namespace SfmlAdapterShapes.App;
 
@@ -21,7 +23,9 @@ public class Application
         }
     }
 
-    private Application() { }
+    private Application()
+    { 
+    }
 
     private RenderWindow? _window;
     private ICanvas? _canvas;
@@ -34,9 +38,15 @@ public class Application
     private IState? _currentState;
     private IState? _dragState;
     private IState? _fillState;
+    private CommandManager? _commandManager;
+    private Originator? _originator;
 
     const string WindowName = "SFML Adapter Shapes";
     const string InputFileName = "input.txt";
+    const string ErrorInitMessage = "Application not initialized.";
+    const string ErrorRunningBeforeMessage = "Application must be initialized before running.";
+    const int AppWidth = 600;
+    const int AppHight = 800;
 
     public void Init()
     {
@@ -46,12 +56,13 @@ public class Application
         InitializeUserHandler();
         InitializeStates();
         InitializeToolbox();
+        InitializeCommandManager();
     }
 
     public void Run()
     {
-        if (_window == null)
-            throw new InvalidOperationException("Application must be initialized before running.");
+        if ( _window == null )
+            throw new InvalidOperationException( ErrorRunningBeforeMessage );
 
         while (_window.IsOpen)
         {
@@ -101,7 +112,7 @@ public class Application
 
     private void InitializeWindow()
     {
-        _window = new RenderWindow(new VideoMode(800, 600), WindowName);
+        _window = new RenderWindow(new VideoMode(AppHight, AppWidth), WindowName);
         _window.Closed += (_, __) => _window.Close();
     }
 
@@ -126,6 +137,12 @@ public class Application
         _dragState = new DragState( this, _userHandler! );
         _fillState = new FillState( this );
         _currentState = _dragState;
+    }
+
+    private void InitializeCommandManager()
+    {
+        _originator = new Originator(_shapes, _selected);
+        _commandManager = new CommandManager(_originator);
     }
 
 
@@ -153,10 +170,11 @@ public class Application
         _toolboxPanel?.Draw();
     }
 
-    public RenderWindow Window => _window ?? throw new InvalidOperationException( "Application not initialized." );
-    public ICanvas Canvas => _canvas ?? throw new InvalidOperationException( "Application not initialized." );
-    public Toolbox ToolboxPanel => _toolboxPanel ?? throw new InvalidOperationException( "Application not initialized." );
-    public IState CurrentState => _currentState ?? throw new InvalidOperationException( "Application not initialized." );
+    public RenderWindow Window => _window ?? throw new InvalidOperationException( ErrorInitMessage );
+    public ICanvas Canvas => _canvas ?? throw new InvalidOperationException( ErrorInitMessage );
+    public Toolbox ToolboxPanel => _toolboxPanel ?? throw new InvalidOperationException( ErrorInitMessage );
+    public IState CurrentState => _currentState ?? throw new InvalidOperationException( ErrorInitMessage );
     public IReadOnlyList<IShape> Shapes => _shapes.AsReadOnly();
     public IReadOnlyList<IShape> Selected => _selected.AsReadOnly();
+    public CommandManager CommandManager => _commandManager ?? throw new InvalidOperationException( ErrorInitMessage );
 }
