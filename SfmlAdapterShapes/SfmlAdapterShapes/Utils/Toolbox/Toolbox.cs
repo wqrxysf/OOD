@@ -4,6 +4,7 @@ using SfmlAdapterShapes.Adapters;
 using SfmlAdapterShapes.App;
 using SfmlAdapterShapes.Commands;
 using SfmlAdapterShapes.Interfaces;
+using SfmlAdapterShapes.Serialization;
 
 namespace SfmlAdapterShapes.Utils.Toolbox;
 public class Toolbox
@@ -21,7 +22,7 @@ public class Toolbox
     private int _outlineIndex = 0;
     private int _thickIndex = 0;
 
-    private readonly FloatRect _panelRect = new FloatRect( 0, 10, 140, 300 );
+    private readonly FloatRect _panelRect = new FloatRect( 0, 10, 140, 500 );
     const string FontName = "assets/ARIAL.TTF";
     const int PanelXCoordinate = 8;
     const int PanelYCoordinate = 15;
@@ -73,6 +74,22 @@ public class Toolbox
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), ModeButtonTitle, _font, 
             () => new ToggleModeCommand( _app ) ) );
+        y += PanelHight + PanelGap;
+
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), "Save Text", _font, 
+            () => new SaveShapesCommand( new TextSaveStrategy(), _app.GetShapesInternal(), "shapes.txt" ) ) );
+        y += PanelHight + PanelGap;
+
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), "Save Binary", _font, 
+            () => new SaveShapesCommand( new BinarySaveStrategy(), _app.GetShapesInternal(), "shapes.bin" ) ) );
+        y += PanelHight + PanelGap;
+
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), "Load Text", _font, 
+            () => new LoadShapesCommand( new TextShapeLoader( _app.Canvas ), _app.GetShapesInternal(), "shapes.txt" ) ) );
+        y += PanelHight + PanelGap;
+
+        _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), "Load Binary", _font, 
+            () => new LoadShapesCommand( new BinaryShapeLoader( _app.Canvas ), _app.GetShapesInternal(), "shapes.bin" ) ) );
 
         window.MouseButtonPressed += ( s, e ) =>
         {

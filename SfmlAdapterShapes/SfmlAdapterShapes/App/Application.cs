@@ -6,7 +6,6 @@ using SFML.Graphics;
 using SFML.Window;
 using SfmlAdapterShapes.Utils.Toolbox;
 using SfmlAdapterShapes.Commands;
-using SfmlAdapterShapes.Memento;
 
 namespace SfmlAdapterShapes.App;
 
