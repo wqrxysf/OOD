@@ -39,7 +39,6 @@ public class Application
     private IState? _dragState;
     private IState? _fillState;
     private CommandManager? _commandManager;
-    private Originator? _originator;
 
     const string WindowName = "SFML Adapter Shapes";
     const string InputFileName = "input.txt";
@@ -141,8 +140,7 @@ public class Application
 
     private void InitializeCommandManager()
     {
-        _originator = new Originator(_shapes, _selected);
-        _commandManager = new CommandManager(_originator);
+        _commandManager = new CommandManager();
     }
 
 

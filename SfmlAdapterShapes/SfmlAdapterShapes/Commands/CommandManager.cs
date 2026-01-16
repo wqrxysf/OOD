@@ -1,23 +1,17 @@
-using SfmlAdapterShapes.Memento;
-
 namespace SfmlAdapterShapes.Commands;
 
 public class CommandManager
 {
-    private readonly Stack<CommandWithMemento> _commandHistory = new();
-    private readonly Originator _originator;
+    private readonly Stack<ICommand> _commandHistory = new();
 
-    public CommandManager(Originator originator)
+    public CommandManager()
     {
-        _originator = originator;
     }
 
     public void ExecuteCommand(ICommand command)
     {
-        var memento = _originator.Save();
         command.Execute();
-        var commandWithMemento = new CommandWithMemento(command, memento);
-        _commandHistory.Push(commandWithMemento);
+        _commandHistory.Push(command);
     }
 
     public bool CanUndo() => _commandHistory.Count > 0;
@@ -27,20 +21,8 @@ public class CommandManager
         if (!CanUndo())
             return;
 
-        var commandWithMemento = _commandHistory.Pop();
-        commandWithMemento.Command.Undo();
-    }
-
-    private class CommandWithMemento
-    {
-        public ICommand Command { get; }
-        public ApplicationStateMemento Memento { get; }
-
-        public CommandWithMemento(ICommand command, ApplicationStateMemento memento)
-        {
-            Command = command;
-            Memento = memento;
-        }
+        var command = _commandHistory.Pop();
+        command.Undo();
     }
 }
 

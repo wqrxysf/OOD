@@ -13,7 +13,7 @@ public class ChangeFillColorCommand : ICommand
 
     public ChangeFillColorCommand(List<IShape> selected, Color newColor)
     {
-        _selected = selected;
+        _selected = new List<IShape>(selected);
         _newColor = newColor;
     }
 

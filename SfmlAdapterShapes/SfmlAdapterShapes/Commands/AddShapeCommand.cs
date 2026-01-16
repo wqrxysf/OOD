@@ -24,7 +24,45 @@ public class AddShapeCommand : ICommand
     {
         if (_addedShape != null)
         {
-            _shapes.Remove(_addedShape);
+            if (_shapes.Contains(_addedShape))
+            {
+                _shapes.Remove(_addedShape);
+            }
+            else
+            {
+                // Shape might be inside a group
+                foreach (var shape in _shapes)
+                {
+                    if (shape is Composite.ShapeComposite composite)
+                    {
+                        if (TryRemoveFromGroup(composite, _addedShape))
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private bool TryRemoveFromGroup(Composite.ShapeComposite group, IShape target)
+    {
+        if (group.Children.Contains(target))
+        {
+            group.Remove(target);
+            return true;
+        }
+
+        foreach (var child in group.Children)
+        {
+            if (child is Composite.ShapeComposite composite)
+            {
+                if (TryRemoveFromGroup(composite, target))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

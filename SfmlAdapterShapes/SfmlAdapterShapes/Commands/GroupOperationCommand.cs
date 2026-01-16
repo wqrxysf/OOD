@@ -6,41 +6,40 @@ namespace SfmlAdapterShapes.Commands;
 public class GroupOperationCommand : ICommand
 {
     private readonly List<IShape> _shapes;
-    private readonly List<IShape> _selected;
+    private readonly List<IShape> _targets;
+    private readonly List<IShape> _appSelection;
     private ShapeComposite? _group;
-    private readonly List<IShape> _groupedShapes = new();
 
     public GroupOperationCommand(List<IShape> shapes, List<IShape> selected)
     {
         _shapes = shapes;
-        _selected = selected;
+        _appSelection = selected;
+        _targets = new List<IShape>(selected);
     }
 
     public void Execute()
     {
-        if (_selected.Count > 1)
+        if (_targets.Count > 1)
         {
             _group = new ShapeComposite();
-            _groupedShapes.Clear();
-            _groupedShapes.AddRange(_selected);
-
-            foreach (var s in _selected)
+            
+            foreach (var s in _targets)
             {
                 _group.Add(s);
             }
-            foreach (var s in _selected)
+            foreach (var s in _targets)
             {
                 _shapes.Remove(s);
             }
             _shapes.Add(_group);
 
-            foreach (var s in _selected)
+            foreach (var s in _targets)
             {
                 s.IsSelected = false;
             }
-            _selected.Clear();
+            _appSelection.Clear();
             _group.IsSelected = true;
-            _selected.Add(_group);
+            _appSelection.Add(_group);
         }
     }
 
@@ -49,14 +48,14 @@ public class GroupOperationCommand : ICommand
         if (_group != null && _shapes.Contains(_group))
         {
             _shapes.Remove(_group);
-            foreach (var child in _groupedShapes)
+            foreach (var child in _group.Children)
             {
                 _shapes.Add(child);
             }
             _group.IsSelected = false;
-            if (_selected.Contains(_group))
+            if (_appSelection.Contains(_group))
             {
-                _selected.Remove(_group);
+                _appSelection.Remove(_group);
             }
         }
     }

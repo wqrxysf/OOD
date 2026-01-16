@@ -48,31 +48,31 @@ public class Toolbox
 
         int y = PanelYCoordinate;
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), CircleButtonTitle, _font, 
-            new AddShapeCommand( () => new CircleAdapter( new Vector2f( 150, 150 ), 40, _app.Canvas ), _app.GetShapesInternal() ) ) );
+            () => new AddShapeCommand( () => new CircleAdapter( new Vector2f( 150, 150 ), 40, _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), RectangleButtonTitle, _font, 
-            new AddShapeCommand( () => new RectangleAdapter( new Vector2f( 120, 120 ), new Vector2f( 220, 180 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
+            () => new AddShapeCommand( () => new RectangleAdapter( new Vector2f( 120, 120 ), new Vector2f( 220, 180 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), TriangleButtonTitle, _font, 
-            new AddShapeCommand( () => new TriangleAdapter( new Vector2f( 100, 100 ), new Vector2f( 160, 200 ), new Vector2f( 220, 120 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
+            () => new AddShapeCommand( () => new TriangleAdapter( new Vector2f( 100, 100 ), new Vector2f( 160, 200 ), new Vector2f( 220, 120 ), _app.Canvas ), _app.GetShapesInternal() ) ) );
         y += PanelHight + PanelGap + PanelInterval;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), FillButtonTitle, _font, 
-            new ChangeFillColorToolboxCommand( _app, FillColors, () => _fillIndex, (idx) => _fillIndex = idx ) ) );
+            () => new ChangeFillColorToolboxCommand( _app, FillColors, () => _fillIndex, (idx) => _fillIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), OutlineButtonTitle, _font, 
-            new ChangeOutlineColorToolboxCommand( _app, OutlineColors, () => _outlineIndex, (idx) => _outlineIndex = idx ) ) );
+            () => new ChangeOutlineColorToolboxCommand( _app, OutlineColors, () => _outlineIndex, (idx) => _outlineIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), ThickButtonTitle, _font, 
-            new ChangeOutlineThicknessToolboxCommand( _app, Thicknesses, () => _thickIndex, (idx) => _thickIndex = idx ) ) );
+            () => new ChangeOutlineThicknessToolboxCommand( _app, Thicknesses, () => _thickIndex, (idx) => _thickIndex = idx ) ) );
         y += PanelHight + PanelGap;
 
         _buttons.Add( new ToolButton( new FloatRect( PanelXCoordinate, y, PanelWidth, PanelHight ), ModeButtonTitle, _font, 
-            new ToggleModeCommand( _app ) ) );
+            () => new ToggleModeCommand( _app ) ) );
 
         window.MouseButtonPressed += ( s, e ) =>
         {

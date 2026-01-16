@@ -16,19 +16,28 @@ public class ChangeOutlineColorVisitor : IShapeVisitor
 
     public void VisitCircle(CircleAdapter circle)
     {
-        _oldColors[circle] = circle.GetOutlineColor();
+        if (!_oldColors.ContainsKey(circle))
+        {
+            _oldColors[circle] = circle.GetOutlineColor();
+        }
         circle.SetOutlineColor(_newColor);
     }
 
     public void VisitRectangle(RectangleAdapter rectangle)
     {
-        _oldColors[rectangle] = rectangle.GetOutlineColor();
+        if (!_oldColors.ContainsKey(rectangle))
+        {
+            _oldColors[rectangle] = rectangle.GetOutlineColor();
+        }
         rectangle.SetOutlineColor(_newColor);
     }
 
     public void VisitTriangle(TriangleAdapter triangle)
     {
-        _oldColors[triangle] = triangle.GetOutlineColor();
+        if (!_oldColors.ContainsKey(triangle))
+        {
+            _oldColors[triangle] = triangle.GetOutlineColor();
+        }
         triangle.SetOutlineColor(_newColor);
     }
 

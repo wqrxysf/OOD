@@ -13,7 +13,7 @@ public class ChangeOutlineColorCommand : ICommand
 
     public ChangeOutlineColorCommand(List<IShape> selected, Color newColor)
     {
-        _selected = selected;
+        _selected = new List<IShape>(selected);
         _newColor = newColor;
     }
 

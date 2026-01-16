@@ -7,19 +7,19 @@ namespace SfmlAdapterShapes.Utils.Toolbox;
 public class ToolButton
 {
     private readonly FloatRect _rect;
-    private readonly ICommand _command;
+    private readonly Func<ICommand> _commandFactory;
     private readonly string _caption;
     private readonly Font _font;
 
     const int TextSize = 12;
     const int PositionTextGap = 6;
 
-    public ToolButton( FloatRect rect, string caption, Font font, ICommand command )
+    public ToolButton( FloatRect rect, string caption, Font font, Func<ICommand> commandFactory )
     {
         _rect = rect;
         _caption = caption;
         _font = font;
-        _command = command;
+        _commandFactory = commandFactory;
     }
 
     public void Draw( RenderWindow window )
@@ -45,7 +45,7 @@ public class ToolButton
     {
         if ( _rect.Contains( pos.X, pos.Y ) )
         {
-            Application.Instance.CommandManager.ExecuteCommand(_command);
+            Application.Instance.CommandManager.ExecuteCommand(_commandFactory());
             return true;
         }
         return false;

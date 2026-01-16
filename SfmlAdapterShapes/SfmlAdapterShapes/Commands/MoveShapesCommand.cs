@@ -13,7 +13,7 @@ public class MoveShapesCommand : ICommand
 
     public MoveShapesCommand(List<IShape> shapes, Vector2f delta)
     {
-        _shapes = shapes;
+        _shapes = new List<IShape>(shapes);
         _delta = delta;
     }
 

@@ -6,19 +6,21 @@ namespace SfmlAdapterShapes.Commands;
 public class UngroupOperationCommand : ICommand
 {
     private readonly List<IShape> _shapes;
-    private readonly List<IShape> _selected;
+    private readonly List<IShape> _targets;
+    private readonly List<IShape> _appSelection;
     private ShapeComposite? _ungroupedComposite;
     private readonly List<IShape> _children = new();
 
     public UngroupOperationCommand(List<IShape> shapes, List<IShape> selected)
     {
         _shapes = shapes;
-        _selected = selected;
+        _appSelection = selected;
+        _targets = new List<IShape>(selected);
     }
 
     public void Execute()
     {
-        if (_selected.Count == 1 && _selected[0] is ShapeComposite composite)
+        if (_targets.Count == 1 && _targets[0] is ShapeComposite composite)
         {
             _ungroupedComposite = composite;
             _children.Clear();
@@ -30,7 +32,7 @@ public class UngroupOperationCommand : ICommand
                 _shapes.Add(child);
             }
             composite.IsSelected = false;
-            _selected.Clear();
+            _appSelection.Clear();
         }
     }
 
@@ -44,9 +46,9 @@ public class UngroupOperationCommand : ICommand
             }
             _shapes.Add(_ungroupedComposite);
             _ungroupedComposite.IsSelected = true;
-            if (!_selected.Contains(_ungroupedComposite))
+            if (!_appSelection.Contains(_ungroupedComposite))
             {
-                _selected.Add(_ungroupedComposite);
+                _appSelection.Add(_ungroupedComposite);
             }
         }
     }

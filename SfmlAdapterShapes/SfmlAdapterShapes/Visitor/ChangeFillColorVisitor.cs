@@ -16,19 +16,28 @@ public class ChangeFillColorVisitor : IShapeVisitor
 
     public void VisitCircle(CircleAdapter circle)
     {
-        _oldColors[circle] = circle.GetFillColor();
+        if (!_oldColors.ContainsKey(circle))
+        {
+            _oldColors[circle] = circle.GetFillColor();
+        }
         circle.SetFillColor(_newColor);
     }
 
     public void VisitRectangle(RectangleAdapter rectangle)
     {
-        _oldColors[rectangle] = rectangle.GetFillColor();
+        if (!_oldColors.ContainsKey(rectangle))
+        {
+            _oldColors[rectangle] = rectangle.GetFillColor();
+        }
         rectangle.SetFillColor(_newColor);
     }
 
     public void VisitTriangle(TriangleAdapter triangle)
     {
-        _oldColors[triangle] = triangle.GetFillColor();
+        if (!_oldColors.ContainsKey(triangle))
+        {
+            _oldColors[triangle] = triangle.GetFillColor();
+        }
         triangle.SetFillColor(_newColor);
     }
 

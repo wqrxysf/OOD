@@ -12,7 +12,7 @@ public class ChangeOutlineThicknessCommand : ICommand
 
     public ChangeOutlineThicknessCommand(List<IShape> selected, float newThickness)
     {
-        _selected = selected;
+        _selected = new List<IShape>(selected);
         _newThickness = newThickness;
     }
 

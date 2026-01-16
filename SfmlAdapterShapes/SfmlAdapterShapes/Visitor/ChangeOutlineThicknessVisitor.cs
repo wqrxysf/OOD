@@ -15,19 +15,28 @@ public class ChangeOutlineThicknessVisitor : IShapeVisitor
 
     public void VisitCircle(CircleAdapter circle)
     {
-        _oldThicknesses[circle] = circle.GetOutlineThickness();
+        if (!_oldThicknesses.ContainsKey(circle))
+        {
+            _oldThicknesses[circle] = circle.GetOutlineThickness();
+        }
         circle.SetOutlineThickness(_newThickness);
     }
 
     public void VisitRectangle(RectangleAdapter rectangle)
     {
-        _oldThicknesses[rectangle] = rectangle.GetOutlineThickness();
+        if (!_oldThicknesses.ContainsKey(rectangle))
+        {
+            _oldThicknesses[rectangle] = rectangle.GetOutlineThickness();
+        }
         rectangle.SetOutlineThickness(_newThickness);
     }
 
     public void VisitTriangle(TriangleAdapter triangle)
     {
-        _oldThicknesses[triangle] = triangle.GetOutlineThickness();
+        if (!_oldThicknesses.ContainsKey(triangle))
+        {
+            _oldThicknesses[triangle] = triangle.GetOutlineThickness();
+        }
         triangle.SetOutlineThickness(_newThickness);
     }
 
