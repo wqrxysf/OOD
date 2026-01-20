@@ -9,7 +9,7 @@ public class LoadShapesCommand : ICommand
     private readonly List<IShape> _targetShapes;
     private readonly string _filePath;
     
-    // For Undo
+    // Undo
     private readonly List<IShape> _previousShapes = new();
 
     public LoadShapesCommand(ShapeLoaderBase loader, List<IShape> targetShapes, string filePath)
@@ -21,7 +21,6 @@ public class LoadShapesCommand : ICommand
 
     public void Execute()
     {
-        // Snapshot current state for Undo
         _previousShapes.Clear();
         _previousShapes.AddRange(_targetShapes);
 

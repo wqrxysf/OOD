@@ -14,8 +14,8 @@ public class BinarySaveStrategy : ISaveStrategy
             shape.Accept(visitor);
         }
 
-        using (var stream = File.Open(filePath, FileMode.Create))
-        using (var writer = new BinaryWriter(stream))
+        var stream = File.Open( filePath, FileMode.Create );
+        var writer = new BinaryWriter( stream );
         {
             writer.Write(visitor.GetExportedData().Count);
             foreach (var data in visitor.GetExportedData())

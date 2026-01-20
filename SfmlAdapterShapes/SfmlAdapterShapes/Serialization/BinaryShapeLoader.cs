@@ -37,19 +37,20 @@ public class BinaryShapeLoader : ShapeLoaderBase
         
         if (type == "GROUP")
         {
-            // Read metadata but skip using it because builder handles composite logic recursively?
-            // Wait, binary format wrote: 
-            // Type(GROUP), FloatCount, ColorCount, ChildCount, [Children...]
-            
-            // Read floats (should be 0 for group but protocol writes count)
             int floatCount = reader.ReadInt32();
-            for(int k=0; k<floatCount; k++) reader.ReadSingle();
+            for ( int k = 0; k < floatCount; k++ )
+            {
+                reader.ReadSingle();
+            }
 
-            // Read colors
             int colorCount = reader.ReadInt32();
-            for(int k=0; k<colorCount; k++) { reader.ReadByte(); reader.ReadByte(); reader.ReadByte(); }
+            for ( int k = 0; k < colorCount; k++ )
+            {
+                reader.ReadByte();
+                reader.ReadByte();
+                reader.ReadByte();
+            }
 
-            // Child count
             int childCount = reader.ReadInt32();
 
             builder.StartGroup();
@@ -61,19 +62,21 @@ public class BinaryShapeLoader : ShapeLoaderBase
             return;
         }
 
-        // Primitive shapes
         int fCount = reader.ReadInt32();
         List<float> f = new List<float>();
-        for (int i = 0; i < fCount; i++) f.Add(reader.ReadSingle());
-
-        int cCount = reader.ReadInt32(); // Colors are r,g,b sequences
-        List<Color> c = new List<Color>();
-        for (int i = 0; i < cCount; i++) 
+        for ( int i = 0; i < fCount; i++ )
         {
-             byte r = reader.ReadByte();
-             byte g = reader.ReadByte();
-             byte b = reader.ReadByte();
-             c.Add(new Color(r,g,b));
+            f.Add( reader.ReadSingle() );
+        }
+
+        int cCount = reader.ReadInt32();
+        List<Color> c = new List<Color>();
+        for ( int i = 0; i < cCount; i++ )
+        {
+            byte r = reader.ReadByte();
+            byte g = reader.ReadByte();
+            byte b = reader.ReadByte();
+            c.Add( new Color( r, g, b ) );
         }
 
         Color fill = c.Count > 0 ? c[0] : Color.White;

@@ -19,7 +19,9 @@ public class CommandManager
     public void Undo()
     {
         if (!CanUndo())
+        {
             return;
+        }
 
         var command = _commandHistory.Pop();
         command.Undo();

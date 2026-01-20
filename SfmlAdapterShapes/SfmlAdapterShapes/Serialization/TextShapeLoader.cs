@@ -24,7 +24,10 @@ public class TextShapeLoader : ShapeLoaderBase
             while ((line = reader.ReadLine()) != null)
             {
                 line = line.Trim();
-                if (string.IsNullOrEmpty(line)) continue;
+                if ( string.IsNullOrEmpty( line ) )
+                {
+                    continue;
+                }
 
                 var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 string type = parts[0];
@@ -52,7 +55,6 @@ public class TextShapeLoader : ShapeLoaderBase
             if (type == "CIRCLE")
             {
                 // CIRCLE <x> <y> <r> <thick> <fr> <fg> <fb> <or> <og> <ob>
-                // Indexes: 1 2 3 4 5 6 7 8 9 10
                 float x = float.Parse(parts[1], CultureInfo.InvariantCulture);
                 float y = float.Parse(parts[2], CultureInfo.InvariantCulture);
                 float r = float.Parse(parts[3], CultureInfo.InvariantCulture);
@@ -74,7 +76,7 @@ public class TextShapeLoader : ShapeLoaderBase
                 float w = float.Parse(parts[3], CultureInfo.InvariantCulture);
                 float h = float.Parse(parts[4], CultureInfo.InvariantCulture);
                 float t = float.Parse(parts[5], CultureInfo.InvariantCulture);
-                // Colors start at 6
+
                 byte fr = byte.Parse(parts[6]);
                 byte fg = byte.Parse(parts[7]);
                 byte fb = byte.Parse(parts[8]);
@@ -107,7 +109,6 @@ public class TextShapeLoader : ShapeLoaderBase
         }
         catch (Exception)
         {
-            // Ignore parse errors for robustness
         }
     }
 }

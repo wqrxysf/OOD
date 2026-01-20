@@ -15,7 +15,7 @@ public class UngroupOperationCommand : ICommand
     {
         _shapes = shapes;
         _appSelection = selected;
-        _targets = new List<IShape>(selected);
+        _targets = [ .. selected ];
     }
 
     public void Execute()

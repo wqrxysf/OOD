@@ -30,7 +30,6 @@ public class AddShapeCommand : ICommand
             }
             else
             {
-                // Shape might be inside a group
                 foreach (var shape in _shapes)
                 {
                     if (shape is Composite.ShapeComposite composite)

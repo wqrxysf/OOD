@@ -29,7 +29,7 @@ public class ShapeBuilder : IShapeBuilder
 
     public void BuildRectangle(float x, float y, float w, float h, float thickness, Color fill, Color outline)
     {
-        var rect = new RectangleAdapter(new Vector2f(x, y), new Vector2f(w, h), _canvas);
+        var rect = new RectangleAdapter(new Vector2f(x, y), new Vector2f(x + w, y + h), _canvas);
         rect.SetFillColor(fill);
         rect.SetOutlineColor(outline);
         rect.SetOutlineThickness(thickness);

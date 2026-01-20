@@ -23,7 +23,5 @@ public class SaveShapesCommand : ICommand
 
     public void Undo()
     {
-        // Save is idempotent/external side effect, usually no undo for file write 
-        // unless we backup the file, but that's overkill for this task.
     }
 }
